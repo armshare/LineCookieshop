@@ -30,7 +30,7 @@ app.post('/callback',  (req, res) => {
 });
 
 app.get('/callback',  (req, res) => {
-    console.log('callback ', req.)
+    console.log('callback ', req);
     // Promise
     //   .all(req.body.events.map(handleEvent))
     //   .then((result) => res.json(result))
