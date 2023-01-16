@@ -3,7 +3,6 @@
 const line = require('@line/bot-sdk');
 const express = require('express');
 const configuration = require('./config.json');
-const crypto = require('crypto');
 // create LINE SDK config from env variables
 // console.log('config ', configuration.ChannelSecret);
 const config = {
@@ -19,18 +18,20 @@ const app = express();
 
 // register a webhook handler with middleware
 // about the middleware, please refer to doc line.middleware(config),
-app.post('/callback',  (req, res) => {
-  Promise
-    .all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).end();
-    });
-});
-
+app.post('/callback', line.middleware(config), (req, res) => {
+    Promise
+      .all(req.body.events.map(handleEvent))
+      .then((result) => res.json(result))
+      .catch((err) => {
+        console.error(err);
+        res.status(500).end();
+      });
+  });
+  
 app.get('/callback',  (req, res) => {
     console.log('callback ', req);
+
+    res.status(200).end();
     // Promise
     //   .all(req.body.events.map(handleEvent))
     //   .then((result) => res.json(result))
@@ -54,7 +55,7 @@ function handleEvent(event) {
 }
 
 // listen on port
-const port = process.env.PORT || 3000;
+const port =  configuration.port;
 app.listen(port, () => {
   console.log(`listening on ${port}`);
 });
